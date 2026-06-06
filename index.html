@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Escalera Pilar · Tenis</title>
+<style>
+  :root{
+    --green:#00703C; --green-d:#00532B; --green-dd:#013922;
+    --purple:#4B2A6A; --purple-d:#3A1F53;
+    --cream:#F7F2E4; --card:#FFFFFF; --gold:#C9A24B; --gold-d:#9c7a2e;
+    --wa:#25d366; --wa-d:#1da851; --heart:#d6336c;
+    --ink:#1E2A22; --muted:#6E7B71; --line:#E7E0CC;
+    --cat-primera:#4B2A6A; --cat-sega:#00703C; --cat-segb:#C9A24B; --cat-tercera:#6E7B71;
+    --shadow:0 2px 12px rgba(0,40,20,.07); --serif:Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#000;color:var(--ink)}
+  #phone{max-width:430px;margin:0 auto;min-height:100vh;background:var(--cream);position:relative;display:flex;flex-direction:column;overflow:hidden}
+  .hidden{display:none!important}
+  .serif{font-family:var(--serif)} .clk{cursor:pointer}
+  header{background:var(--green-d);color:#fff;padding:16px 18px 14px;position:sticky;top:0;z-index:20;border-bottom:3px solid var(--gold)}
+  header .row{display:flex;align-items:center;justify-content:space-between}
+  header h1{font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:.4px}
+  header .sub{font-size:11.5px;opacity:.85;margin-top:2px}
+  .me-chip{background:var(--purple);padding:7px 11px;border-radius:6px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer}
+  main{flex:1;overflow-y:auto;padding:14px 14px 92px}
+  .card{background:var(--card);border-radius:8px;box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;border:1px solid var(--line)}
+  .card-pad{padding:15px}
+  .section-title{font-family:var(--serif);font-size:13px;letter-spacing:.4px;color:var(--green-d);font-weight:700;margin:10px 4px 9px}
+  .note{text-align:center;font-size:11.5px;color:var(--muted);padding:8px 16px 0;line-height:1.5}
+  .banner{background:#f1eaf6;border:1px solid #d9c8ea;color:var(--purple-d);font-size:12px;font-weight:600;padding:10px 12px;border-radius:8px;margin-bottom:12px;text-align:center}
+  .band{font-family:var(--serif);font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#fff;padding:6px 14px;display:flex;align-items:center;gap:8px}
+  .band .pct{margin-left:auto;font-size:10px;opacity:.8;font-weight:600}
+  .lrow{display:flex;align-items:center;gap:11px;padding:11px 13px;border-bottom:1px solid var(--line);border-left:4px solid transparent}
+  .lrow:last-child{border-bottom:none} .lrow.me{background:#f3f8f4}
+  .pos{width:30px;height:30px;border-radius:7px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;font-family:var(--serif)}
+  .lrow.me .pos{background:var(--green);color:#fff} .pos.crown{background:var(--gold);color:#fff}
+  .pinfo{flex:1;min-width:0}
+  .pname{font-weight:600;font-size:15px;display:flex;align-items:center;gap:6px}
+  .plevel{font-size:11px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .barrio{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:4px;background:var(--cream);color:var(--green-d);border:1px solid var(--line)}
+  .rec{font-size:10.5px;font-weight:700;color:var(--green-d);background:#eef5f0;padding:1px 7px;border-radius:4px}
+  .tag.you{background:var(--green);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px}
+  .challenge-btn{background:var(--purple);color:#fff;border:none;font-size:12.5px;font-weight:700;padding:8px 13px;border-radius:6px;flex-shrink:0}
+  .challenge-btn.wc{background:#fff;color:var(--gold-d);border:1.5px solid var(--gold)}
+  .lock{font-size:10.5px;color:var(--muted);flex-shrink:0;text-align:right}
+  nav{position:absolute;bottom:0;left:0;right:0;background:var(--green-d);display:flex;height:62px;z-index:20;border-top:3px solid var(--gold)}
+  nav button{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:rgba(255,255,255,.6);font-size:9.5px;font-weight:600;padding-top:5px;position:relative;cursor:pointer}
+  nav button.active{color:#fff} nav .ico{font-size:18px;line-height:1}
+  nav .badge{position:absolute;top:6px;left:50%;margin-left:7px;background:var(--gold);color:var(--green-dd);font-size:9px;font-weight:800;min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px}
+  #login,#signup,#pending{position:absolute;inset:0;z-index:50;background:linear-gradient(165deg,var(--green-d) 0%,var(--green-dd) 55%,var(--purple-d) 130%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px;color:#fff;overflow-y:auto}
+  #login h2,#signup h2{font-family:var(--serif);font-size:23px;font-weight:700;margin-top:6px}
+  .ttl-sub{font-family:var(--serif);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-top:3px}
+  .barrios-line{opacity:.92;font-size:11px;margin-top:12px;margin-bottom:18px;text-align:center;line-height:1.7;max-width:320px}
+  .barrios-line b{color:#fff}
+  .loginbox{background:var(--card);border-radius:10px;padding:20px;width:100%;max-width:340px;color:var(--ink);border-top:3px solid var(--gold)}
+  .loginbox label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .loginbox input,.loginbox select{width:100%;border:1.5px solid var(--line);border-radius:7px;padding:12px;font-size:16px;margin-top:6px;margin-bottom:13px;background:#fff;color:var(--ink)}
+  .loginbox input:focus,.loginbox select:focus{outline:none;border-color:var(--green)}
+  .bigbtn{width:100%;background:var(--green);color:#fff;border:none;padding:14px;border-radius:8px;font-size:16px;font-weight:700;font-family:var(--serif);cursor:pointer}
+  .linkbtn{background:none;border:none;color:#fff;font-size:13px;font-weight:600;border-bottom:1px solid var(--gold);padding-bottom:2px;margin-top:18px;cursor:pointer}
+  .err{color:#b3471f;font-size:13px;text-align:center;margin-bottom:8px;min-height:16px}
+  .unavail-box{text-align:left;margin-top:4px;margin-bottom:13px;display:flex;flex-direction:column;gap:6px}
+  .unavail-box label.chk{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--ink);text-transform:none;letter-spacing:0;cursor:pointer}
+  .empty{text-align:center;color:var(--muted);padding:28px 20px;font-size:13.5px}
+  .empty .ico{font-size:32px;display:block;margin-bottom:8px;opacity:.5}
+  .stat-grid{display:flex;gap:10px;flex-wrap:wrap}
+  .stat{flex:1;min-width:90px;background:var(--card);border-radius:8px;padding:13px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--line)}
+  .stat .n{font-size:22px;font-weight:800;color:var(--green-d);font-family:var(--serif)}
+  .stat .l{font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.3}
+  .ch{padding:14px;border-bottom:1px solid var(--line)} .ch:last-child{border-bottom:none}
+  .ch-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+  .ch-who{font-weight:700;font-size:15px;font-family:var(--serif)}
+  .ch-meta{font-size:12.5px;color:var(--muted);margin-bottom:11px;line-height:1.55}
+  .ch-date{font-size:12.5px;color:var(--green-d);font-weight:700;margin-bottom:10px}
+  .ch-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .act{border:none;font-size:13px;font-weight:700;padding:9px 12px;border-radius:7px;flex:1;min-width:84px;cursor:pointer}
+  .act.win{background:var(--green);color:#fff} .act.acc{background:var(--purple);color:#fff}
+  .act.lose{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+  .act.rej{background:#fff;color:#b3471f;border:1.5px solid #d8a78f}
+  .act.wa{background:var(--wa);color:#fff;flex-basis:100%}
+  .badge-state{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap}
+  .badge-state.pend{background:#fbf3e0;color:var(--gold-d)} .badge-state.acc{background:#e7f1ea;color:var(--green-d)}
+  .badge-state.rej{background:#f7ece7;color:#b3471f} .badge-state.play{background:#eef0ee;color:var(--muted)}
+  .hrow{display:flex;align-items:center;gap:11px;padding:12px 13px;border-bottom:1px solid var(--line)}
+  .hrow:last-child{border-bottom:none}
+  .h-ico{width:32px;height:32px;border-radius:7px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:1px solid var(--line)}
+  .h-main{flex:1;min-width:0} .h-res{font-size:13.5px;font-weight:600} .h-res b{font-family:var(--serif)}
+  .h-sub{font-size:11px;color:var(--muted);margin-top:2px}
+  .h-score{font-family:var(--serif);font-weight:800;font-size:14px;color:var(--green-d);background:var(--cream);padding:4px 9px;border-radius:5px;border:1px solid var(--line);flex-shrink:0}
+  .rank-n{font-family:var(--serif);font-weight:800;color:var(--gold-d);width:22px;text-align:center;flex-shrink:0}
+  .scrolllist{max-height:300px;overflow-y:auto}
+  .post{padding:13px 14px;border-bottom:1px solid var(--line)} .post:last-child{border-bottom:none}
+  .post-top{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .post-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .post-ico.res{background:#e7f1ea} .post-ico.chal{background:#f1eaf6}
+  .post-body{flex:1;min-width:0;font-size:13.5px;line-height:1.45} .post-body b{font-family:var(--serif)}
+  .post-when{font-size:10.5px;color:var(--muted);margin-top:1px}
+  .post-score{font-family:var(--serif);font-weight:800;font-size:13px;color:var(--green-d);background:var(--cream);padding:3px 8px;border-radius:5px;border:1px solid var(--line);flex-shrink:0}
+  .post-actions{display:flex;gap:18px;margin-top:9px;padding-left:44px}
+  .post-actions button{background:none;border:none;font-size:12.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:pointer}
+  .post-actions button.liked{color:var(--heart)}
+  .comments{margin:8px 0 0 44px;display:flex;flex-direction:column;gap:5px}
+  .comment{font-size:12px;line-height:1.4;background:var(--cream);border:1px solid var(--line);border-radius:7px;padding:6px 9px}
+  .reg h4{font-family:var(--serif);font-size:14.5px;color:var(--green-d);margin:16px 0 6px} .reg h4:first-child{margin-top:2px}
+  .reg p{font-size:13px;color:var(--ink);line-height:1.6;margin-bottom:5px}
+  .reg .lead{color:var(--muted);font-size:12.5px;font-style:italic;margin-bottom:6px;font-family:var(--serif)}
+  .cat-legend{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0} .cat-legend span{font-size:10.5px;font-weight:700;color:#fff;padding:2px 9px;border-radius:4px}
+  #modal{position:absolute;inset:0;z-index:60;background:rgba(0,30,15,.5);display:flex;align-items:flex-end;justify-content:center}
+  #modal .sheet{background:var(--card);width:100%;max-width:430px;border-radius:14px 14px 0 0;padding:22px 20px 28px;border-top:3px solid var(--gold);max-height:90vh;overflow-y:auto}
+  .sheet h3{font-family:var(--serif);font-size:19px;font-weight:700;margin-bottom:6px}
+  .sheet p{font-size:13.5px;color:var(--muted);line-height:1.55;margin-bottom:16px}
+  .sheet .opt{display:flex;gap:10px;flex-wrap:wrap}
+  .sheet label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px}
+  .sheet input,.sheet textarea,.sheet select{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:12px;font-size:15px;margin-bottom:14px;font-family:inherit}
+  .sheet input.score{text-align:center;font-size:18px;font-family:var(--serif);font-weight:700;letter-spacing:2px}
+  .sheet textarea{min-height:70px;resize:none}
+  .divider{border:none;border-top:1px solid var(--line);margin:4px 0 14px}
+  .toast{position:absolute;bottom:78px;left:50%;transform:translateX(-50%);background:var(--green-dd);color:#fff;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:70;max-width:88%;text-align:center;border:1px solid var(--gold)}
+  .pill{display:inline-flex;align-items:center;gap:5px;background:var(--cream);color:var(--gold-d);font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;border:1px solid var(--line)}
+  .admin-req{display:flex;align-items:center;gap:10px;padding:11px 13px;border-bottom:1px solid var(--line)} .admin-req:last-child{border-bottom:none}
+  .admin-req .ai{flex:1} .admin-req .ai b{font-size:14px} .admin-req .ai div{font-size:11.5px;color:var(--muted)}
+  .mini{border:none;font-size:12px;font-weight:700;padding:7px 11px;border-radius:6px;cursor:pointer} .mini.ok{background:var(--green);color:#fff}
+  .reglink{width:100%;background:var(--card);color:var(--green-d);border:1.5px solid var(--line);padding:13px;border-radius:8px;font-size:14px;font-weight:700;font-family:var(--serif);margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+  .appfoot{margin:20px 6px 6px;text-align:center;color:var(--muted);font-size:11px;line-height:1.55;border-top:1px solid var(--line);padding-top:14px} .appfoot b{color:var(--green-d)}
+  .contact-btn{background:var(--card);border:1.5px solid var(--green);color:var(--green-d);font-size:12.5px;font-weight:700;padding:9px 14px;border-radius:8px;margin-bottom:10px;cursor:pointer}
+  @media(min-width:740px){
+    body{background:var(--cream)} #phone{max-width:900px;box-shadow:0 0 0 1px var(--line)}
+    #hdr{order:1;padding:18px 30px 16px} nav{order:2} main{order:3} header h1{font-size:20px}
+    nav{position:static;height:56px;border-top:none;border-bottom:3px solid var(--gold);padding:0 16px}
+    nav button{flex-direction:row;gap:9px;font-size:14px;flex:0 0 auto;padding:0 22px} nav .ico{font-size:18px}
+    nav .badge{top:11px;left:auto;right:14px;margin:0} main{padding:24px 36px 60px}
+  }
+</style>
+</head>
+<body>
+<div id="phone">
+  <div id="login">
+    <div id="loginLogo" style="margin-bottom:8px"></div>
+    <div class="ttl-sub">Caballeros · Singles</div>
+    <div class="barrios-line" id="barriosLine"></div>
+    <div class="loginbox">
+      <div class="err" id="loginErr"></div>
+      <label>Email</label><input id="liEmail" type="email" placeholder="tu@email.com">
+      <label>Contraseña</label><input id="liPass" type="password" placeholder="••••••••">
+      <button class="bigbtn" onclick="doLogin()">Ingresar</button>
+    </div>
+    <button class="linkbtn" onclick="showSignup()">¿Querés sumarte? Inscribite</button>
+  </div>
+
+  <div id="signup" class="hidden">
+    <h2 style="margin-top:0">Inscripción</h2>
+    <div class="barrios-line">Completá tus datos. Tu solicitud queda<br>pendiente de aprobación del organizador.</div>
+    <div class="loginbox">
+      <div class="err" id="suErr"></div>
+      <label>Email</label><input id="suEmail" type="email">
+      <label>Contraseña (mín. 6)</label><input id="suPass" type="password">
+      <label>Nombre y apellido</label><input id="suName" type="text">
+      <label>Fecha de nacimiento</label><input id="suDob" type="date">
+      <label>Celular (con +54 9 11)</label><input id="suPhone" type="tel" placeholder="+54 9 11 5555-0001">
+      <label>Barrio</label><select id="suBarrio"></select>
+      <label>Nivel declarado</label><select id="suLevel"></select>
+      <label>Horarios en los que NO podés jugar (máx. 2)</label><div id="suUnavail" class="unavail-box"></div>
+      <button class="bigbtn" onclick="doSignup()">Enviar solicitud</button>
+    </div>
+    <button class="linkbtn" onclick="hideSignup()">← Volver</button>
+  </div>
+
+  <div id="pending" class="hidden">
+    <div id="pendLogo" style="margin-bottom:10px"></div>
+    <h2 style="margin-top:0;font-size:20px">¡Ya casi!</h2>
+    <div class="barrios-line">Tu inscripción está <b>pendiente de aprobación</b> del organizador. Te avisamos por el grupo de WhatsApp cuando entres a la escalera.</div>
+    <div class="loginbox" style="text-align:center">
+      <button class="bigbtn act wa" style="background:var(--wa)" id="pendWsp">💬 Unirme al grupo de WhatsApp</button>
+      <button class="linkbtn" style="color:var(--green-d);border-color:var(--gold)" onclick="doLogout()">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <header class="hidden" id="hdr">
+    <div class="row">
+      <div style="display:flex;align-items:center;gap:10px"><span id="hdrLogo" style="display:flex"></span><div><h1>The Escalera Pilar</h1><div class="sub" id="hdrSub"></div></div></div>
+      <div class="me-chip" id="meChip" onclick="go('perfil')"></div>
+    </div>
+  </header>
+  <main class="hidden" id="main"></main>
+  <nav class="hidden" id="nav">
+    <button id="nav-escalera" class="active" onclick="go('escalera')"><span class="ico">🪜</span>Ranking</button>
+    <button id="nav-desafios" onclick="go('desafios')"><span class="ico">⚔️</span>Desafíos</button>
+    <button id="nav-feed" onclick="go('feed')"><span class="ico">📣</span>Feed</button>
+    <button id="nav-stats" onclick="go('stats')"><span class="ico">🏆</span>Stats</button>
+    <button id="nav-perfil" onclick="go('perfil')"><span class="ico">👤</span>Perfil</button>
+  </nav>
+  <div id="modal" class="hidden"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SB_URL="https://ywwkzpfoeextwiwzgxwj.supabase.co";
+const SB_KEY="sb_publishable_erJOFLHirh3AhSWv84mAiw_EWOWWX0A";
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+const DEFAULT_BARRIOS=["Mayling","Lagartos","Ayres","Ayres Plaza","Mapuche","Tortugas","Las Liebres"];
+const NIVELES=["Primera","Segunda A","Segunda B","Tercera A","Tercera B"];
+const CATS=[{name:"Primera",color:"var(--cat-primera)",cum:0.15,pct:"15% sup."},{name:"Segunda A",color:"var(--cat-sega)",cum:0.40,pct:"25%"},{name:"Segunda B",color:"var(--cat-segb)",cum:0.65,pct:"25%"},{name:"Tercera",color:"var(--cat-tercera)",cum:1.00,pct:"35% inf."}];
+const UNAVAIL_BLOCKS=[{k:'semana',l:'Semana (lun a vie)'},{k:'sab_m',l:'Sábado mañana'},{k:'sab_t',l:'Sábado tarde (15-17)'},{k:'sab_n',l:'Sábado noche (18-19)'},{k:'dom_m',l:'Domingo mañana'},{k:'dom_t',l:'Domingo tarde (15-17)'},{k:'dom_n',l:'Domingo noche (18-19)'}];
+const DAYS=['dom','lun','mar','mié','jue','vie','sáb'];
+let S={all:[],players:[],pending:[],challenges:[],history:[],likes:{},comments:{},config:{}};
+let meId=null, view='escalera', viewingId=null;
+
+/* ---------- helpers ---------- */
+const P=id=>S.all.find(p=>p.id===id);
+const me=()=>P(meId);
+const byPos=()=>[...S.players].sort((a,b)=>a.pos-b.pos);
+const fn=p=>p?p.name.split(' ')[0]:'—';
+const pad=n=>String(n).padStart(2,'0');
+function ageOf(dob){ if(!dob)return '–'; const d=new Date(dob),t=new Date(); let a=t.getFullYear()-d.getFullYear(); const m=t.getMonth()-d.getMonth(); if(m<0||(m===0&&t.getDate()<d.getDate()))a--; return a; }
+const ACTIVE=['esperando_horarios','esperando_eleccion','aceptado'];
+const activeChallenges=()=>S.challenges.filter(c=>ACTIVE.includes(c.status));
+const openChallengesFor=id=>activeChallenges().filter(c=>c.fromId===id||c.toId===id);
+const isBusy=id=>openChallengesFor(id).length>0;
+function catOf(pos){ const N=S.players.length||1; const frac=pos/N; for(const c of CATS){ if(frac<=c.cum+1e-9)return c; } return CATS[3]; }
+function nameLink(p){ return p?`<b class="clk" onclick="openPlayer('${p.id}')">${p.name}</b>`:'—'; }
+function blockLabel(k){ const b=UNAVAIL_BLOCKS.find(x=>x.k===k); return b?b.l:k; }
+function blockOfSlot(s){ const d=new Date(s),day=d.getDay(),h=d.getHours(); if(day>=1&&day<=5)return 'semana'; const pre=day===6?'sab':'dom'; if(h<12)return pre+'_m'; if(h<17)return pre+'_t'; return pre+'_n'; }
+function slotOk(s){ if(!s)return false; const d=new Date(s); if(isNaN(d))return false; const day=d.getDay(),h=d.getHours(); if(day===0||day===6)return (h>=9&&h<12)||(h>=15&&h<19); return h>=18; }
+function isWeekend(s){ const d=new Date(s); return d.getDay()===0||d.getDay()===6; }
+function fmtDT(s){ if(!s)return ''; const d=new Date(s); return `${DAYS[d.getDay()]} ${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function challengeInfo(meP,t){ if(t.id===meP.id)return{ok:false}; if(t.pos>=meP.pos)return{ok:false,reason:'abajo'}; if(isBusy(meP.id))return{ok:false,reason:'vos-ocupado'}; if(isBusy(t.id))return{ok:false,reason:'ocupado'}; const gap=meP.pos-t.pos; if(gap<=2)return{ok:true,needsWC:false}; if(meP.wildCards>0)return{ok:true,needsWC:true}; return{ok:false,reason:'fuera'}; }
+function waLink(t,txt){ return `https://wa.me/${(t.phone||'').replace(/\D/g,'')}?text=${encodeURIComponent(txt)}`; }
+function barrios(){ const b=(S.config.barrios||'').split(',').filter(Boolean); return b.length?b:DEFAULT_BARRIOS; }
+function wspGroup(){ return S.config.wsp_group||'#'; }
+function contactAdmin(){ window.location.href='mailto:fmolinaportela@hotmail.com?subject='+encodeURIComponent('Sugerencia · The Escalera Pilar'); }
+
+/* ---------- ESCUDO (logo) ---------- */
+function racketsBall(strings){ const r=`<g transform="rotate(R)"><line x1="-2.5" y1="-30" x2="-7" y2="-42" stroke="#C9A24B" stroke-width="2.5" stroke-linecap="round"/><line x1="2.5" y1="-30" x2="7" y2="-42" stroke="#C9A24B" stroke-width="2.5" stroke-linecap="round"/><rect x="-3" y="-32" width="6" height="34" rx="2.5" fill="#F7F2E4" stroke="#C9A24B" stroke-width="1.3"/><ellipse cx="0" cy="-54" rx="14" ry="19" fill="#013922" stroke="#C9A24B" stroke-width="3.5"/>${strings?'<line x1="-8" y1="-54" x2="8" y2="-54" stroke="#C9A24B" stroke-width="0.7" opacity="0.55"/><line x1="0" y1="-71" x2="0" y2="-38" stroke="#C9A24B" stroke-width="0.7" opacity="0.55"/>':''}</g>`; return `<g transform="translate(100,115)">${r.replace('rotate(R)','rotate(-24)')}${r.replace('rotate(R)','rotate(24)')}</g><circle cx="100" cy="142" r="10" fill="#D9E04F" stroke="#AEB63E" stroke-width="1.3"/><path d="M92,138 Q100,146 108,138" fill="none" stroke="#FFFFFF" stroke-width="1.3" opacity="0.85"/>`; }
+function escudoFull(px){ return `<svg width="${px}" height="${px}" viewBox="0 0 200 200"><defs><path id="aT" d="M 21,100 A 79,79 0 0,1 179,100"/><path id="aB" d="M 21,100 A 79,79 0 0,0 179,100"/></defs><circle cx="100" cy="100" r="92" fill="#4B2A6A"/><circle cx="100" cy="100" r="92" fill="none" stroke="#C9A24B" stroke-width="5"/><circle cx="100" cy="100" r="69" fill="#00532B"/><circle cx="100" cy="100" r="69" fill="none" stroke="#C9A24B" stroke-width="2"/><text style="font-family:Georgia,serif;font-size:12px;font-weight:700;letter-spacing:2px;fill:#C9A24B;dominant-baseline:central"><textPath href="#aT" startOffset="50%" text-anchor="middle">THE ESCALERA</textPath></text><text style="font-family:Georgia,serif;font-size:12px;font-weight:700;letter-spacing:5px;fill:#C9A24B;dominant-baseline:central"><textPath href="#aB" startOffset="50%" text-anchor="middle">PILAR</textPath></text>${racketsBall(true)}</svg>`; }
+function escudoMini(px){ return `<svg width="${px}" height="${px}" viewBox="0 0 200 200"><circle cx="100" cy="100" r="92" fill="#4B2A6A"/><circle cx="100" cy="100" r="92" fill="none" stroke="#C9A24B" stroke-width="7"/><circle cx="100" cy="100" r="69" fill="#00532B"/>${racketsBall(false)}</svg>`; }
+
+/* ---------- AUTH ---------- */
+async function doSignup(){
+  const e=document.getElementById('suErr'); e.textContent='';
+  const email=val('suEmail'),pass=val('suPass'),name=val('suName'),dob=val('suDob'),phone=val('suPhone'),barrio=val('suBarrio'),level=val('suLevel');
+  const unavail=getUnavail('suUnavail');
+  if(!email||!pass){e.textContent='Completá email y contraseña.';return;}
+  if(pass.length<6){e.textContent='La contraseña debe tener al menos 6 caracteres.';return;}
+  if(!name||!phone||!dob){e.textContent='Completá nombre, celular y fecha de nacimiento.';return;}
+  const {error}=await sb.auth.signUp({email,password:pass,options:{data:{name,phone,dob,barrio,level,unavail}}});
+  if(error){e.textContent=error.message;return;}
+  await boot();
+}
+async function doLogin(){
+  const e=document.getElementById('loginErr'); e.textContent='';
+  const {error}=await sb.auth.signInWithPassword({email:val('liEmail'),password:val('liPass')});
+  if(error){ e.textContent = /confirm/i.test(error.message)?'Falta confirmar el email. Desactivá la confirmación en Supabase (ver instrucciones).':error.message; return; }
+  await boot();
+}
+async function doLogout(){ await sb.auth.signOut(); meId=null; location.reload(); }
+
+/* ---------- CARGA DE DATOS ---------- */
+async function refresh(){
+  try{ await sb.rpc('run_sweeps'); }catch(e){}
+  const [pr,ch,ma,lk,cm,cf]=await Promise.all([
+    sb.from('profiles').select('*'),
+    sb.from('challenges').select('*'),
+    sb.from('matches').select('*').order('played_at',{ascending:true}),
+    sb.from('likes').select('*'),
+    sb.from('comments').select('*').order('created_at',{ascending:true}),
+    sb.from('config').select('*'),
+  ]);
+  const mapP=p=>({id:p.id,name:p.name,phone:p.phone||'',dob:p.dob,barrio:p.barrio,level:p.level,pos:p.pos,bestPos:p.best_pos,wildCards:p.wild_cards,wcStreak:p.wc_streak,rejThisMonth:p.rej_this_month,lastRejTarget:p.last_rej_target,lastPlayed:p.last_played,unavail:p.unavail||[],isAdmin:p.is_admin,approved:p.approved});
+  S.all=(pr.data||[]).map(mapP);
+  S.players=S.all.filter(p=>p.approved&&p.pos!=null);
+  S.pending=S.all.filter(p=>!p.approved);
+  S.challenges=(ch.data||[]).map(c=>({id:c.id,fromId:c.from_id,toId:c.to_id,usedWC:c.used_wc,status:c.status,outcome:c.outcome,slots:c.slots,playDate:c.play_date,playPlace:c.play_place,createdTs:new Date(c.created_at).getTime()}));
+  S.history=(ma.data||[]).map(m=>({winnerId:m.winner_id,loserId:m.loser_id,score:m.score,swapped:m.swapped,spots:m.spots,moverId:m.mover_id,wc:m.used_wc,type:m.type,ts:new Date(m.played_at).getTime(),date:new Date(m.played_at).toLocaleDateString('es-AR',{day:'2-digit',month:'short'})}));
+  S.likes={}; (lk.data||[]).forEach(l=>{(S.likes[l.post_id]=S.likes[l.post_id]||[]).push(l.user_id);});
+  S.comments={}; (cm.data||[]).forEach(c=>{(S.comments[c.post_id]=S.comments[c.post_id]||[]).push({by:c.user_id,text:c.body,ts:new Date(c.created_at).getTime()});});
+  S.config={}; (cf.data||[]).forEach(c=>{S.config[c.key]=c.value;});
+}
+
+async function boot(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){ showScreen('login'); return; }
+  meId=session.user.id;
+  await refresh();
+  let m=me();
+  if(!m){ await new Promise(r=>setTimeout(r,800)); await refresh(); m=me(); }
+  renderBarriosLine();
+  if(!m){ showScreen('login'); return; }
+  if(!m.approved){ document.getElementById('pendLogo').innerHTML=escudoMini(60); document.getElementById('pendWsp').onclick=()=>window.open(wspGroup(),'_blank'); showScreen('pending'); return; }
+  showScreen('app'); go('escalera');
+}
+function showScreen(s){
+  ['login','signup','pending'].forEach(i=>document.getElementById(i).classList.add('hidden'));
+  ['hdr','main','nav'].forEach(i=>document.getElementById(i).classList.add('hidden'));
+  if(s==='app'){ ['hdr','main','nav'].forEach(i=>document.getElementById(i).classList.remove('hidden')); }
+  else document.getElementById(s).classList.remove('hidden');
+}
+function showSignup(){ document.getElementById('suBarrio').innerHTML=barrios().map(b=>`<option>${b}</option>`).join(''); document.getElementById('suLevel').innerHTML=NIVELES.map(n=>`<option>${n}</option>`).join(''); unavailCheckboxes('suUnavail',[]); showScreen('signup'); }
+function hideSignup(){ showScreen('login'); }
+function renderBarriosLine(){ const el=document.getElementById('barriosLine'); const u=[...new Set(S.players.map(p=>p.barrio).filter(Boolean))]; el.innerHTML=`<b>${(u.length?u:barrios()).join(' · ')}</b>`; }
+const val=id=>document.getElementById(id).value.trim();
+function unavailCheckboxes(cid,checked){ document.getElementById(cid).innerHTML=UNAVAIL_BLOCKS.map(b=>`<label class="chk"><input type="checkbox" style="width:18px;flex:0 0 auto;margin:0" value="${b.k}" ${checked&&checked.includes(b.k)?'checked':''} onchange="limitUnavail('${cid}')"> ${b.l}</label>`).join(''); }
+function limitUnavail(cid){ const ch=[...document.querySelectorAll('#'+cid+' input')].filter(b=>b.checked); if(ch.length>2){event.target.checked=false;toast('Máximo 2 bloques');} }
+function getUnavail(cid){ return [...document.querySelectorAll('#'+cid+' input:checked')].map(b=>b.value); }
+
+/* ---------- NAV / RENDER ---------- */
+const NAVS=['escalera','desafios','feed','stats','perfil'];
+function go(v){ view=v; NAVS.forEach(n=>document.getElementById('nav-'+n).classList.toggle('active',n===v)); render(); }
+function openPlayer(id){ if(id===meId){go('perfil');return;} viewingId=id; view='jugador'; NAVS.forEach(n=>document.getElementById('nav-'+n).classList.toggle('active',n==='escalera')); render(); }
+function goReglas(){ view='reglas'; NAVS.forEach(n=>document.getElementById('nav-'+n).classList.toggle('active',n==='perfil')); render(); }
+function footer(){ return `<div class="appfoot"><p>Esta app fue creada sin fines de lucro. Para mayor información, ayuda o sugerencias, contactá al administrador.</p><button class="contact-btn" onclick="contactAdmin()">✉️ Contactar al administrador</button></div>`; }
+function render(){
+  const m=me(); if(!m)return;
+  document.getElementById('hdrSub').textContent=`${S.players.length} jugadores · escalera permanente`;
+  document.getElementById('meChip').innerHTML=`<span>👤</span> #${m.pos} · ${fn(m)}`;
+  const open=openChallengesFor(meId).length;
+  const nd=document.getElementById('nav-desafios'); nd.querySelector('.badge')?.remove();
+  if(open>0){const b=document.createElement('span');b.className='badge';b.textContent=open;nd.appendChild(b);}
+  let c;
+  if(view==='escalera')c=viewEscalera(); else if(view==='desafios')c=viewDesafios(); else if(view==='feed')c=viewFeed();
+  else if(view==='stats')c=viewStats(); else if(view==='jugador')c=viewJugador(); else if(view==='reglas')c=viewReglas(); else c=viewPerfil();
+  document.getElementById('main').innerHTML=c+footer();
+}
+
+/* ---------- STATS helpers ---------- */
+function playerStats(id){ const recs=S.history.filter(h=>h.winnerId===id||h.loserId===id); const played=recs.length,won=recs.filter(h=>h.winnerId===id).length,lost=played-won,pct=played?Math.round(won/played*100):0; let streak={type:null,n:0}; for(let i=S.history.length-1;i>=0;i--){const h=S.history[i]; if(h.winnerId!==id&&h.loserId!==id)continue; const w=h.winnerId===id; if(streak.n===0)streak={type:w?'W':'L',n:1}; else if((streak.type==='W')===w)streak.n++; else break;} return {played,won,lost,pct,streak}; }
+function streakLabel(s){ if(!s.n)return '–'; return s.type==='W'?`${s.n} 🔥`:`${s.n} ❄️`; }
+function recShort(st){ return `G${st.won} P${st.lost}${st.played?' · '+st.pct+'%':''}${st.streak.n?' · '+(st.streak.type==='W'?'🔥':'❄️')+st.streak.n:''}`; }
+function historyRows(filterId){ let h=[...S.history]; if(filterId)h=h.filter(x=>x.winnerId===filterId||x.loserId===filterId); if(!h.length)return `<div class="empty" style="padding:24px"><span class="ico">📜</span>Sin partidos todavía.</div>`; return h.reverse().map(x=>{const w=P(x.winnerId),l=P(x.loserId),moved=x.swapped?` · ${fn(w)} subió 🔺`:'',ico=x.type==='walkover'?'⚠️':'🎾'; return `<div class="hrow"><div class="h-ico">${ico}</div><div class="h-main"><div class="h-res">${nameLink(w)} le ganó a ${nameLink(l)}</div><div class="h-sub">${x.date}${moved}${x.wc?' · ★ wild card':''}</div></div><div class="h-score">${x.score}</div></div>`;}).join(''); }
+
+/* ---------- VIEWS ---------- */
+function viewEscalera(){
+  const m=me(),myCat=catOf(m.pos),busy=isBusy(m.id); let html='',lastCat=null;
+  byPos().forEach(p=>{ const cat=catOf(p.pos),st=playerStats(p.id);
+    if(cat.name!==lastCat){html+=`<div class="band" style="background:${cat.color}">${cat.name}<span class="pct">${cat.pct}</span></div>`;lastCat=cat.name;}
+    const isMe=p.id===meId,posCls=p.pos===1?'pos crown':'pos'; let right='';
+    if(!isMe){ const ci=challengeInfo(m,p);
+      if(ci.ok&&ci.needsWC)right=`<button class="challenge-btn wc" onclick="askChallenge('${p.id}',true)">★ Wild</button>`;
+      else if(ci.ok)right=`<button class="challenge-btn" onclick="askChallenge('${p.id}',false)">Desafiar</button>`;
+      else if(ci.reason==='ocupado')right=`<span class="lock">⏳ ocupado</span>`;
+      else if(ci.reason==='fuera')right=`<span class="lock">🔒</span>`; else right=`<span class="lock">—</span>`;
+    } else right=`<span class="tag you">VOS</span>`;
+    html+=`<div class="lrow ${isMe?'me':''}" style="border-left-color:${cat.color}"><div class="${posCls}">${p.pos}</div><div class="pinfo clk" onclick="openPlayer('${p.id}')"><div class="pname">${p.name} <span style="font-size:11px;color:var(--muted)">›</span></div><div class="plevel"><span class="barrio">${p.barrio||''}</span> ${ageOf(p.dob)}a <span class="rec">${recShort(st)}</span></div></div>${right}</div>`;
+  });
+  const banner=busy?`<div class="banner">Tenés un desafío activo. Resolvelo para iniciar otro.</div>`:'';
+  return `<div class="section-title">Tu posición</div><div class="stat-grid" style="margin-bottom:12px"><div class="stat"><div class="n">#${m.pos}</div><div class="l">Puesto</div></div><div class="stat"><div class="n" style="font-size:14px;color:${myCat.color};padding-top:5px">${myCat.name}</div><div class="l">Categoría</div></div><div class="stat"><div class="n">${m.wildCards}</div><div class="l">Wild cards</div></div></div>${banner}<div class="section-title">El ranking general</div><div class="card">${html}</div><div class="note">Podés desafiar hasta 2 puestos por encima. Para más, usá una ★ wild card.</div>`;
+}
+function chLabel(c){ if(c.status==='aceptado')return '<span class="badge-state acc">Aceptado</span>'; if(c.status==='done')return c.outcome==='rechazado'?'<span class="badge-state rej">Rechazado</span>':'<span class="badge-state play">Jugado</span>'; return '<span class="badge-state pend">Pendiente</span>'; }
+function viewDesafios(){
+  const mine=S.challenges.filter(c=>c.fromId===meId||c.toId===meId);
+  const active=mine.filter(c=>ACTIVE.includes(c.status)).sort((a,b)=>b.createdTs-a.createdTs);
+  const done=mine.filter(c=>c.status==='done').sort((a,b)=>b.createdTs-a.createdTs);
+  let html=`<div class="section-title">Tus desafíos</div>`;
+  html+=active.length?`<div class="card">`+active.map(challengeCard).join('')+`</div>`:`<div class="card"><div class="empty"><span class="ico">⚔️</span>No tenés desafíos activos.<br>Andá al ranking y desafiá a alguien.</div></div>`;
+  html+=`<div class="section-title">Tu historial de desafíos</div>`;
+  html+=done.length?`<div class="card"><div class="scrolllist">`+done.map(c=>{const o=P(c.fromId===meId?c.toId:c.fromId);return `<div class="hrow"><div class="h-ico">${c.outcome==='jugado'?'🎾':(c.outcome==='walkover'?'⚠️':'✕')}</div><div class="h-main"><div class="h-res">vs ${nameLink(o)}</div><div class="h-sub">${c.outcome==='rechazado'?'Rechazado':(c.outcome==='walkover'?'W.O.':'Jugado')}${c.playDate?' · '+fmtDT(c.playDate):''}</div></div></div>`;}).join('')+`</div></div>`:`<div class="card"><div class="empty"><span class="ico">📜</span>Todavía no tenés desafíos resueltos.</div></div>`;
+  return html;
+}
+function challengeCard(c){
+  const amCha=c.fromId===meId,other=P(amCha?c.toId:c.fromId); let meta='',date='',actions='';
+  if(c.status==='aceptado'){ date=`<div class="ch-date">🗓️ Juegan: ${fmtDT(c.playDate)}${c.playPlace?' · '+c.playPlace:''}</div>`; meta=`${amCha?'Desafiaste a':'Te desafió'} ${nameLink(other)} (#${other.pos}).${c.usedWC?' <span class="pill">★ wild</span>':''}`; actions=`<button class="act win" onclick="scoreModal(${c.id})">Cargar resultado</button><button class="act wa" onclick="waCoordinate('${other.id}')">📲 WhatsApp</button>`; }
+  else if(c.status==='esperando_horarios'){ const hs=Math.max(0,Math.ceil((c.createdTs+48*3600000-Date.now())/3600000));
+    if(amCha){meta=`Desafiaste a ${nameLink(other)} (#${other.pos}). Esperando que proponga 2 horarios (le quedan ~${hs} h).`;actions=`<button class="act wa" onclick="waChallenge('${other.id}')">📲 Recordar por WhatsApp</button>`;}
+    else{meta=`${nameLink(other)} (#${other.pos}) te desafió. Tenés <b>~${hs} h</b> para responder (el silencio se considera rechazo).`;actions=`<button class="act acc" onclick="proposeModal(${c.id})">Aceptar y proponer fechas</button><button class="act rej" onclick="reject(${c.id})">Rechazar</button>`;}
+  } else if(c.status==='esperando_eleccion'){
+    if(amCha){meta=`${nameLink(other)} propuso 2 opciones. Elegí una:`;actions=c.slots.map((s,i)=>`<button class="act acc" onclick="pickSlot(${c.id},${i})">${fmtDT(s.dt)} · ${s.place}</button>`).join('');}
+    else{meta=`Propusiste 2 opciones a ${nameLink(other)}. Esperando que elija.`;date=`<div class="ch-date">Opciones: ${c.slots.map(s=>fmtDT(s.dt)+' ('+s.place+')').join(' · ')}</div>`;actions=`<button class="act wa" onclick="waChallenge('${other.id}')">📲 Recordar</button>`;}
+  }
+  return `<div class="ch"><div class="ch-top"><span class="ch-who">vs ${other.name}</span>${chLabel(c)}</div>${date}<div class="ch-meta">${meta}</div><div class="ch-actions">${actions}</div></div>`;
+}
+function timeAgo(ts){ if(!ts)return''; const s=(Date.now()-ts)/1000; if(s<60)return'recién'; if(s<3600)return Math.floor(s/60)+' min'; if(s<86400)return Math.floor(s/3600)+' h'; return Math.floor(s/86400)+' d'; }
+function socialBar(pid){ const likes=S.likes[pid]||[],comments=S.comments[pid]||[],liked=likes.includes(meId); const clist=comments.length?`<div class="comments">`+comments.map(c=>`<div class="comment">${nameLink(P(c.by))}: ${c.text}</div>`).join('')+`</div>`:''; return `<div class="post-actions"><button class="${liked?'liked':''}" onclick="likePost('${pid}')">${liked?'♥':'♡'} ${likes.length||''} Me gusta</button><button onclick="commentModal('${pid}')">💬 ${comments.length||''} Comentar</button></div>${clist}`; }
+function viewFeed(){
+  const last5=[...S.history].reverse().slice(0,5);
+  const res=last5.length?last5.map(h=>{const pid='res-'+h.ts,w=P(h.winnerId),l=P(h.loserId);return `<div class="post"><div class="post-top"><div class="post-ico res">${h.type==='walkover'?'⚠️':'🎾'}</div><div class="post-body"><div>${nameLink(w)} le ganó a ${nameLink(l)}${h.swapped?` y subió a #${w.pos}`:''}</div><div class="post-when">${h.date} · ${timeAgo(h.ts)}</div></div><div class="post-score">${h.score}</div></div>${socialBar(pid)}</div>`;}).join(''):`<div class="empty"><span class="ico">🎾</span>Sin resultados todavía.</div>`;
+  const acts=activeChallenges();
+  const ch=acts.length?acts.slice().reverse().map(c=>{const pid='ch-'+c.id,a=P(c.fromId),b=P(c.toId);return `<div class="post"><div class="post-top"><div class="post-ico chal">⚔️</div><div class="post-body"><div>${nameLink(a)} desafió a ${nameLink(b)}</div><div class="post-when">#${a.pos} vs #${b.pos}${c.status==='aceptado'?' · juegan '+fmtDT(c.playDate):''} · ${timeAgo(c.createdTs)}</div></div>${chLabel(c)}</div>${socialBar(pid)}</div>`;}).join(''):`<div class="empty"><span class="ico">⚔️</span>No hay desafíos activos.</div>`;
+  const hd=S.challenges.filter(c=>c.status==='done');
+  const hdH=hd.length?hd.slice().reverse().map(c=>{const a=P(c.fromId),b=P(c.toId);return `<div class="hrow"><div class="h-ico">${c.outcome==='jugado'?'🎾':(c.outcome==='walkover'?'⚠️':'✕')}</div><div class="h-main"><div class="h-res">${nameLink(a)} vs ${nameLink(b)}</div><div class="h-sub">${c.outcome==='rechazado'?'Rechazado':(c.outcome==='walkover'?'W.O.':'Jugado')}</div></div></div>`;}).join(''):`<div class="empty"><span class="ico">📜</span>Sin desafíos resueltos.</div>`;
+  return `<div class="section-title">📣 Últimos resultados</div><div class="card">${res}</div><div class="section-title">⚔️ Desafíos activos</div><div class="card">${ch}</div><div class="section-title">📜 Historial de partidos</div><div class="card"><div class="scrolllist">${historyRows(null)}</div></div><div class="section-title">🗂️ Historial de desafíos</div><div class="card"><div class="scrolllist">${hdH}</div></div>`;
+}
+function topRows(arr){ return arr.length?arr.map((x,i)=>`<div class="hrow"><div class="rank-n">${i+1}</div><div class="h-main"><div class="h-res">${nameLink(x.p)}</div><div class="h-sub">${x.sub}</div></div><div class="h-score">${x.val}</div></div>`).join(''):`<div class="empty" style="padding:20px">Sin datos aún.</div>`; }
+function viewStats(){
+  const champs=CATS.map(cat=>{const inCat=byPos().filter(p=>catOf(p.pos).name===cat.name),leader=inCat[0];return `<div class="hrow"><div class="h-ico" style="background:${cat.color};color:#fff">👑</div><div class="h-main"><div class="h-res" style="color:${cat.color}">${cat.name}</div><div class="h-sub">${leader?nameLink(leader)+' · #'+leader.pos:'sin jugadores'}</div></div></div>`;}).join('');
+  const stats=S.players.map(p=>({p,st:playerStats(p.id)}));
+  const activos=stats.filter(x=>x.st.played>0).sort((a,b)=>b.st.played-a.st.played).slice(0,5).map(x=>({p:x.p,val:x.st.played,sub:'partidos jugados'}));
+  const ganados=stats.filter(x=>x.st.won>0).sort((a,b)=>b.st.won-a.st.won).slice(0,5).map(x=>({p:x.p,val:x.st.won,sub:'victorias'}));
+  const winrate=stats.filter(x=>x.st.played>=3).sort((a,b)=>b.st.pct-a.st.pct).slice(0,5).map(x=>({p:x.p,val:x.st.pct+'%',sub:`${x.st.won}-${x.st.lost} en ${x.st.played}`}));
+  return `<div class="section-title">👑 Campeón del mes · por categoría</div><div class="card">${champs}</div><div class="section-title">🎾 Más activos</div><div class="card">${topRows(activos)}</div><div class="section-title">🏆 Más partidos ganados</div><div class="card">${topRows(ganados)}</div><div class="section-title">🎯 Mejor win rate (mín. 3)</div><div class="card">${topRows(winrate)}</div>`;
+}
+function viewJugador(){
+  const p=P(viewingId); if(!p)return go('escalera'); const st=playerStats(p.id),cat=catOf(p.pos),m=me(),ci=challengeInfo(m,p); let cta='';
+  if(p.id!==meId){ if(ci.ok&&ci.needsWC)cta=`<button class="bigbtn" style="background:#fff;color:var(--gold-d);border:1.5px solid var(--gold)" onclick="askChallenge('${p.id}',true)">★ Desafiar con wild card</button>`; else if(ci.ok)cta=`<button class="bigbtn" style="background:var(--purple)" onclick="askChallenge('${p.id}',false)">Desafiar</button>`; else if(ci.reason==='ocupado')cta=`<div class="banner">${fn(p)} ya tiene un desafío activo.</div>`; else if(ci.reason==='vos-ocupado')cta=`<div class="banner">Tenés un desafío activo.</div>`; }
+  return `<button class="linkbtn" style="color:var(--green-d);border-color:var(--gold);margin:0 0 12px 4px" onclick="go('escalera')">‹ Volver al ranking</button><div class="card card-pad" style="text-align:center"><div style="font-size:42px">👤</div><div class="serif" style="font-size:20px;font-weight:700;margin-top:4px">${p.name}</div><div style="color:var(--muted);font-size:13px;margin-top:4px"><span class="barrio">${p.barrio||''}</span> · ${ageOf(p.dob)} años</div><div style="margin-top:6px"><span class="pill" style="background:${cat.color};color:#fff;border:none">${cat.name}</span></div></div><div class="stat-grid" style="margin-bottom:10px"><div class="stat"><div class="n">#${p.pos}</div><div class="l">Puesto</div></div><div class="stat"><div class="n">#${p.bestPos}</div><div class="l">Pico</div></div><div class="stat"><div class="n">${streakLabel(st.streak)}</div><div class="l">Racha</div></div></div><div class="stat-grid" style="margin-bottom:14px"><div class="stat"><div class="n">${st.played}</div><div class="l">Jugados</div></div><div class="stat"><div class="n">${st.won}</div><div class="l">Ganados</div></div><div class="stat"><div class="n">${st.pct}%</div><div class="l">Efectividad</div></div></div>${cta}<div class="section-title" style="margin-top:10px">Sus partidos</div><div class="card"><div class="scrolllist">${historyRows(p.id)}</div></div>`;
+}
+function viewReglas(){
+  const legend=CATS.map(c=>`<span style="background:${c.color}">${c.name} · ${c.pct}</span>`).join('');
+  return `<button class="linkbtn" style="color:var(--green-d);border-color:var(--gold);margin:0 0 12px 4px" onclick="go('perfil')">‹ Volver al perfil</button><div class="card card-pad reg"><p class="lead">Reglamento · Escalera permanente · Caballeros singles</p>
+  <h4>Art. 1 — La escalera</h4><p>Ranking permanente, del puesto 1 (más alto) al último. La posición es dinámica. El que se inscribe entra último.</p>
+  <h4>Art. 2 — Categorías</h4><p>Una escalera única dividida por zona (porcentaje):</p><div class="cat-legend">${legend}</div><p>Tu categoría depende de tu posición.</p>
+  <h4>Art. 3 — Desafíos</h4><p>Desafiás hasta 2 puestos por encima. Un solo desafío activo por jugador a la vez.</p>
+  <h4>Art. 4 — Resultado</h4><p>Si gana el desafiante, sube al puesto del desafiado; el desafiado y los que estaban en el medio bajan un lugar. Si pierde, no se mueve nada.</p>
+  <h4>Art. 5 — Wild card</h4><p>Permite desafiar a más de 2 puestos. Empezás con 1; ganás otra cada 2 victorias seguidas; máximo 2. Se reintegra si el desafío se rechaza o vence.</p>
+  <h4>Art. 6 — El partido</h4><p>Al mejor de 3 sets; el tercero es super tie-break a 10.</p>
+  <h4>Art. 7 — Disponibilidad</h4><p>Declarás hasta 2 bloques en los que no podés jugar (editable en Mi Cuenta).</p>
+  <h4>Art. 8 — Coordinación</h4><p>48 hs para aceptar/rechazar (el silencio = rechazo). El desafiado propone 2 opciones de día, horario y cancha dentro de 10 días (una de fin de semana, sin pisar los bloques del desafiante); el desafiante elige. No hay reprogramación: si no se juega, W.O. Si pasan 10 días sin jugarse, pierde el desafiado.</p>
+  <h4>Art. 9 — Rechazos</h4><p>1 rechazo libre por mes; del 2º = derrota. No dos veces seguidas al mismo rival.</p>
+  <h4>Art. 10 — Inactividad</h4><p>30 días sin jugar = bajás 1 puesto. No aplica al #1.</p>
+  <h4>Art. 11 — Cancha y pelotas</h4><p>El costo de la cancha, de existir, se paga a medias. Las pelotas las pone el desafiante (tubo nuevo).</p>
+  <h4>Art. 12 — Resultados</h4><p>Los carga el ganador; el perdedor tiene 24 hs para impugnar. El W.O. se computa 6-0 6-0.</p></div>`;
+}
+function viewPerfil(){
+  const m=me(),cat=catOf(m.pos),st=playerStats(m.id); let admin='';
+  if(m.isAdmin){ const reqs=S.pending.length?S.pending.map(r=>`<div class="admin-req"><div class="ai"><b>${r.name}</b><div>${r.barrio||'?'} · ${r.level||'?'} · ${ageOf(r.dob)} años · ${r.phone||''}</div></div><button class="mini ok" onclick="approve('${r.id}')">Aprobar</button></div>`).join(''):`<div class="empty" style="padding:22px"><span class="ico">📭</span>No hay solicitudes pendientes.</div>`; admin=`<div class="section-title" style="margin-top:8px">🛠️ Solicitudes de inscripción (admin)</div><div class="card">${reqs}</div>`; }
+  return `<div class="section-title">Tu perfil</div><div class="card card-pad" style="text-align:center"><div style="font-size:42px">👤</div><div class="serif" style="font-size:20px;font-weight:700;margin-top:4px">${m.name}</div><div style="color:var(--muted);font-size:13px;margin-top:4px"><span class="barrio">${m.barrio||''}</span> · ${ageOf(m.dob)} años</div><div style="margin-top:6px"><span class="pill" style="background:${cat.color};color:#fff;border:none">${cat.name}</span></div></div><div class="stat-grid" style="margin-bottom:10px"><div class="stat"><div class="n">#${m.pos}</div><div class="l">Puesto</div></div><div class="stat"><div class="n">#${m.bestPos}</div><div class="l">Pico</div></div><div class="stat"><div class="n">${st.pct}%</div><div class="l">Efectividad</div></div></div><div class="stat-grid" style="margin-bottom:12px"><div class="stat"><div class="n">${m.wildCards}</div><div class="l">Wild cards</div></div><div class="stat"><div class="n">${m.wcStreak}/2</div><div class="l">Racha p/ wild</div></div><div class="stat"><div class="n">${streakLabel(st.streak)}</div><div class="l">Racha</div></div></div><button class="reglink" onclick="editAccountModal()">⚙️ Mi cuenta · editar mis datos ›</button><button class="reglink" style="color:var(--wa-d);border-color:#bfe6cd" onclick="window.open(wspGroup(),'_blank')">💬 Grupo de WhatsApp del torneo ›</button><button class="reglink" onclick="goReglas()">📋 Reglamento del torneo ›</button><div class="section-title">Tus últimos partidos</div><div class="card"><div class="scrolllist">${historyRows(m.id)}</div></div>${admin}<button class="bigbtn" style="background:#fff;color:#b3471f;border:1.5px solid var(--line);margin-top:6px" onclick="doLogout()">Cerrar sesión</button>`;
+}
+
+/* ---------- MI CUENTA ---------- */
+function editAccountModal(){ const m=me(); modal(`<h3>Mi cuenta</h3><p>Editá tus datos.</p><label>Nombre y apellido</label><input id="acName" value="${m.name||''}"><label>Fecha de nacimiento</label><input id="acDob" type="date" value="${m.dob||''}"><label>Celular</label><input id="acPhone" value="${m.phone||''}"><label>Barrio</label><select id="acBarrio">${barrios().map(b=>`<option ${b===m.barrio?'selected':''}>${b}</option>`).join('')}</select><label>Horarios en los que NO podés jugar (máx. 2)</label><div id="acUnavail" class="unavail-box"></div><p id="acErr" style="color:#b3471f;min-height:14px"></p><div class="opt"><button class="act lose" onclick="closeModal()">Cancelar</button><button class="act win" onclick="saveAccount()">Guardar</button></div>`); unavailCheckboxes('acUnavail',m.unavail||[]); }
+async function saveAccount(){ const m=me(); const upd={name:val('acName'),dob:val('acDob')||null,phone:val('acPhone'),barrio:val('acBarrio'),unavail:getUnavail('acUnavail')}; const {error}=await sb.from('profiles').update(upd).eq('id',m.id); if(error){document.getElementById('acErr').textContent=error.message;return;} closeModal(); toast('Datos actualizados ✅'); await refresh(); render(); }
+
+/* ---------- ACCIONES ---------- */
+async function approve(id){ const {error}=await sb.rpc('approve_player',{p_id:id}); if(error){toast(error.message);return;} toast('Jugador aprobado ✅'); await refresh(); render(); }
+function askChallenge(targetId,useWC){ const t=P(targetId); const txt=useWC?`Vas a usar una ★ wild card para desafiar a <b>${t.name}</b> (#${t.pos}), a ${me().pos-t.pos} puestos.`:`Vas a desafiar a <b>${t.name}</b> (#${t.pos}). Si ganás, subís a su puesto.`; modal(`<h3>Confirmar desafío</h3><p>${txt}</p><div class="opt"><button class="act lose" onclick="closeModal()">Cancelar</button><button class="act win" onclick="doChallenge('${targetId}',${useWC})">Desafiar</button></div>`); }
+async function doChallenge(targetId,useWC){ const {error}=await sb.rpc('do_challenge',{p_to:targetId,p_use_wc:useWC}); closeModal(); if(error){toast(error.message);return;} const t=P(targetId); modal(`<h3>¡Desafío enviado! ⚔️</h3><p>Avisale a ${fn(t)} por WhatsApp para que acepte y proponga horarios.</p><div class="opt"><button class="act lose" onclick="closeModal();go('desafios')">Después</button><button class="act wa" onclick="waChallenge('${targetId}');closeModal();go('desafios')">📲 Abrir WhatsApp</button></div>`); await refresh(); }
+function waChallenge(targetId){ const t=P(targetId); window.open(waLink(t,`¡Hola ${fn(t)}! Te desafié en The Escalera Pilar 🎾 por tu puesto #${t.pos}. Tenés 48 hs para aceptar o rechazar y proponer 2 opciones de día, horario y cancha (una de fin de semana). ¡Saludos, ${fn(me())}!`),'_blank'); }
+function waCoordinate(targetId){ const t=P(targetId); window.open(waLink(t,`¡Hola ${fn(t)}! Por nuestro partido de The Escalera Pilar 🎾. ¡Nos vemos!`),'_blank'); }
+let proposeCtx=null;
+function proposeModal(chId){ const c=S.challenges.find(x=>x.id===chId); const cha=P(c.fromId); proposeCtx={chId}; const un=cha.unavail||[]; const blocks=un.length?`<div style="background:#f7ece7;border:1px solid #e0c3b5;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:12.5px;color:#8a3a1d"><b>⚠️ ${fn(cha)} NO puede jugar en:</b><br>${un.map(blockLabel).join('<br>')}</div>`:`<div style="background:#e7f1ea;border:1px solid #bcd9c8;border-radius:8px;padding:10px;margin-bottom:14px;font-size:12.5px;color:#155c39">${fn(cha)} no declaró horarios en los que no pueda jugar.</div>`;
+  modal(`<h3>Aceptar y proponer fechas</h3><p>Proponé 2 opciones de día, horario y cancha dentro de 10 días. Una debe ser de fin de semana. Ventanas: lun-vie desde 18 hs; sáb-dom 9-12 y 15-19.</p>${blocks}<label>Opción 1 · día y hora</label><input type="datetime-local" id="slot1" oninput="checkSlotLive(1)"><div id="slot1msg" style="font-size:11.5px;margin:-8px 0 12px"></div><label>Opción 1 · cancha</label><input type="text" id="place1" placeholder="Ej: Mayling, cancha 2"><label>Opción 2 · día y hora</label><input type="datetime-local" id="slot2" oninput="checkSlotLive(2)"><div id="slot2msg" style="font-size:11.5px;margin:-8px 0 12px"></div><label>Opción 2 · cancha</label><input type="text" id="place2" placeholder="Ej: Lagartos, cancha 1"><p id="slotErr" style="color:#b3471f;margin-bottom:10px;min-height:14px"></p><div class="opt"><button class="act lose" onclick="closeModal()">Cancelar</button><button class="act acc" onclick="submitSlots(${chId})">Aceptar y enviar</button></div>`); }
+function checkSlotLive(n){ const el=document.getElementById('slot'+n),msg=document.getElementById('slot'+n+'msg'),v=el.value; if(!v){msg.textContent='';return;} const c=S.challenges.find(x=>x.id===proposeCtx.chId),cha=P(c.fromId),un=cha.unavail||[],now=Date.now(),t=new Date(v).getTime(),max=now+10*86400000; let err=''; if(!slotOk(v))err='Fuera de las ventanas válidas.'; else if(t<now)err='Es una fecha pasada.'; else if(t>max)err='Fuera de los próximos 10 días.'; else if(un.includes(blockOfSlot(v)))err=`${fn(cha)} no puede jugar en ese horario (${blockLabel(blockOfSlot(v))}).`; if(err){msg.style.color='#b3471f';msg.innerHTML='✗ '+err;} else {msg.style.color='#155c39';msg.innerHTML='✓ Horario válido'+(isWeekend(v)?' · fin de semana':'');} }
+async function submitSlots(chId){ const c=S.challenges.find(x=>x.id===chId),cha=P(c.fromId),un=cha.unavail||[]; const s1=val('slot1'),s2=val('slot2'),p1=val('place1'),p2=val('place2'),e=document.getElementById('slotErr');
+  if(!s1||!s2){e.textContent='Cargá día y hora en las 2 opciones.';return;} if(!p1||!p2){e.textContent='Indicá la cancha en las 2 opciones.';return;}
+  if(!slotOk(s1)||!slotOk(s2)){e.textContent='Algún horario está fuera de las ventanas.';return;} if(!isWeekend(s1)&&!isWeekend(s2)){e.textContent='Al menos una opción debe ser de fin de semana.';return;}
+  const now=Date.now(),max=now+10*86400000; for(const s of[s1,s2]){const t=new Date(s).getTime(); if(t<now){e.textContent='No se puede una fecha pasada.';return;} if(t>max){e.textContent='Deben estar dentro de 10 días.';return;}}
+  for(const s of[s1,s2]){ if(un.includes(blockOfSlot(s))){e.textContent=`Una opción cae cuando ${fn(cha)} no puede (${blockLabel(blockOfSlot(s))}).`;return;} }
+  const {error}=await sb.from('challenges').update({slots:[{dt:s1,place:p1},{dt:s2,place:p2}],status:'esperando_eleccion'}).eq('id',chId); if(error){e.textContent=error.message;return;}
+  closeModal(); const msg=`¡Desafío aceptado! 🎾 Te propongo: 1) ${fmtDT(s1)} (${p1}) · 2) ${fmtDT(s2)} (${p2}). Entrá para elegir.`; modal(`<h3>¡Aceptado! 🎾</h3><p>Avisale a ${fn(cha)} las 2 fechas para que elija.</p><div class="opt"><button class="act lose" onclick="closeModal();render()">Después</button><button class="act wa" onclick="window.open('${waLink(cha,msg)}','_blank');closeModal();render()">📲 Avisar por WhatsApp</button></div>`); await refresh(); }
+async function pickSlot(chId,idx){ const c=S.challenges.find(x=>x.id===chId),s=c.slots[idx]; const {error}=await sb.from('challenges').update({play_date:s.dt,play_place:s.place,status:'aceptado'}).eq('id',chId); if(error){toast(error.message);return;} toast(`Partido confirmado: ${fmtDT(s.dt)} 🗓️`); await refresh(); render(); }
+function scoreModal(chId){ const c=S.challenges.find(x=>x.id===chId),cha=P(c.fromId),def=P(c.toId); modal(`<h3>Cargar resultado</h3><p>Partido entre <b>${cha.name}</b> (#${cha.pos}) y <b>${def.name}</b> (#${def.pos}).</p><label>Score (3er set = super tie-break a 10)</label><input class="score" id="scoreInput" placeholder="6-3 4-6 10-7" maxlength="20"><div class="opt" style="margin-bottom:14px"><button class="act win" onclick="setWinner(${chId},'${cha.id}',false)">Ganó ${fn(cha)}</button><button class="act acc" onclick="setWinner(${chId},'${def.id}',false)">Ganó ${fn(def)}</button></div><hr class="divider"><label>¿No se presentó alguien? W.O. (6-0 6-0)</label><div class="opt"><button class="act lose" onclick="setWinner(${chId},'${cha.id}',true)">${fn(cha)} por W.O.</button><button class="act lose" onclick="setWinner(${chId},'${def.id}',true)">${fn(def)} por W.O.</button></div>`); }
+async function setWinner(chId,winnerId,wo){ const score=wo?'6-0 6-0':((document.getElementById('scoreInput').value||'').trim()||'s/score'); const {error}=await sb.rpc('resolve_match',{p_challenge:chId,p_winner:winnerId,p_score:score,p_wo:wo}); closeModal(); if(error){toast(error.message);return;} toast('Resultado cargado ✅'); await refresh(); render(); }
+function reject(chId){ const c=S.challenges.find(x=>x.id===chId),def=me(),cha=P(c.fromId);
+  if(def.lastRejTarget===cha.id){ modal(`<h3>No podés rechazar</h3><p>Ya rechazaste a ${cha.name} la vez anterior: este desafío hay que jugarlo.</p><button class="act win" onclick="closeModal()">Entendido</button>`); return; }
+  if(def.rejThisMonth>=1){ modal(`<h3>Segundo rechazo del mes</h3><p>Ya usaste tu rechazo libre. Si rechazás, contás como derrota y ${cha.name} te toma el puesto.</p><div class="opt"><button class="act lose" onclick="closeModal()">Mejor juego</button><button class="act rej" onclick="doReject(${chId})">Rechazar igual</button></div>`); return; }
+  doReject(chId); }
+async function doReject(chId){ const {error}=await sb.rpc('reject_challenge',{p_challenge:chId}); closeModal(); if(error){toast(error.message);return;} toast('Desafío rechazado'); await refresh(); render(); }
+async function likePost(pid){ const arr=S.likes[pid]||[]; if(arr.includes(meId)) await sb.from('likes').delete().eq('post_id',pid).eq('user_id',meId); else await sb.from('likes').insert({post_id:pid,user_id:meId}); await refresh(); render(); }
+function commentModal(pid){ modal(`<h3>Comentar</h3><textarea id="cmt" placeholder="Escribí algo..."></textarea><div class="opt"><button class="act lose" onclick="closeModal()">Cancelar</button><button class="act win" onclick="addComment('${pid}')">Publicar</button></div>`); }
+async function addComment(pid){ const t=(document.getElementById('cmt').value||'').trim(); if(!t){closeModal();return;} await sb.from('comments').insert({post_id:pid,user_id:meId,body:t}); closeModal(); toast('Comentario publicado 💬'); await refresh(); render(); }
+
+/* ---------- UTILS ---------- */
+function modal(html){ const m=document.getElementById('modal'); m.innerHTML=`<div class="sheet">${html}</div>`; m.classList.remove('hidden'); m.onclick=e=>{if(e.target===m)closeModal();}; }
+function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
+let toastT; function toast(msg){ clearTimeout(toastT); document.querySelector('.toast')?.remove(); const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.getElementById('phone').appendCh
