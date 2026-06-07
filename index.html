@@ -453,4 +453,12 @@ async function addComment(pid){ const t=(document.getElementById('cmt').value||'
 /* ---------- UTILS ---------- */
 function modal(html){ const m=document.getElementById('modal'); m.innerHTML=`<div class="sheet">${html}</div>`; m.classList.remove('hidden'); m.onclick=e=>{if(e.target===m)closeModal();}; }
 function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
-let toastT; function toast(msg){ clearTimeout(toastT); document.querySelector('.toast')?.remove(); const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.getElementById('phone').appendCh
+let toastT; function toast(msg){ clearTimeout(toastT); document.querySelector('.toast')?.remove(); const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.getElementById('phone').appendChild(t); toastT=setTimeout(()=>t.remove(),2600); }
+
+/* ---------- INIT ---------- */
+document.getElementById('loginLogo').innerHTML=escudoFull(150);
+document.getElementById('hdrLogo').innerHTML=escudoMini(34);
+boot();
+</script>
+</body>
+</html>
