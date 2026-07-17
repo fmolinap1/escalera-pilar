@@ -172,7 +172,6 @@
     <h2 style="margin-top:0;font-size:20px">¡Ya casi!</h2>
     <div class="barrios-line">Tu inscripción está <b>pendiente de aprobación</b> del organizador. Te avisamos por el grupo de WhatsApp cuando entres a la escalera.</div>
     <div class="loginbox" style="text-align:center">
-      <button class="bigbtn act wa" style="background:var(--purple)" id="pendNotify">📲 Avisar al organizador que me inscribí</button>
       <button class="bigbtn act wa" style="background:var(--wa)" id="pendWsp">💬 Unirme al grupo de WhatsApp</button>
       <button class="linkbtn" style="color:var(--green-d);border-color:var(--gold)" onclick="doLogout()">Cerrar sesión</button>
     </div>
@@ -229,6 +228,7 @@ function blockOfSlot(s){ const d=new Date(s),day=d.getDay(),h=d.getHours(); if(d
 function slotOk(s){ if(!s)return false; const d=new Date(s); if(isNaN(d))return false; const day=d.getDay(),h=d.getHours(); if(day===0||day===6)return (h>=9&&h<12)||(h>=15&&h<19); return h>=18; }
 function isWeekend(s){ const d=new Date(s); return d.getDay()===0||d.getDay()===6; }
 function fmtDT(s){ if(!s)return ''; const d=new Date(s); return `${DAYS[d.getDay()]} ${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function argISO(dtLocal){ return dtLocal?dtLocal+':00-03:00':dtLocal; }
 function challengeInfo(meP,t){ if(t.id===meP.id)return{ok:false}; if(t.pos>=meP.pos)return{ok:false,reason:'abajo'}; if(isBusy(meP.id))return{ok:false,reason:'vos-ocupado'}; if(isBusy(t.id))return{ok:false,reason:'ocupado'}; const gap=meP.pos-t.pos; if(gap<=2)return{ok:true,needsWC:false}; if(meP.wildCards>0)return{ok:true,needsWC:true}; return{ok:false,reason:'fuera'}; }
 function waLink(t,txt){ return `https://wa.me/${(t.phone||'').replace(/\D/g,'')}?text=${encodeURIComponent(txt)}`; }
 function barrios(){ const b=(S.config.barrios||'').split(',').filter(Boolean); return b.length?b:DEFAULT_BARRIOS; }
@@ -293,7 +293,7 @@ async function boot(){
   if(!m){ await new Promise(r=>setTimeout(r,800)); await refresh(); m=me(); }
   renderBarriosLine();
   if(!m){ showScreen('login'); return; }
-  if(!m.approved){ document.getElementById('pendLogo').innerHTML=escudoMini(60); document.getElementById('pendWsp').onclick=()=>window.open(wspGroup(),'_blank'); document.getElementById('pendNotify').onclick=()=>window.open(`https://wa.me/${ADMIN_WSP}?text=`+encodeURIComponent(`¡Hola! Soy ${m.name}${m.barrio?' ('+m.barrio+')':''}. Me acabo de inscribir en Escalera Pilar 🎾 y quedé pendiente de aprobación. ¿Me aprobás cuando puedas? ¡Gracias!`),'_blank'); showScreen('pending'); return; }
+  if(!m.approved){ document.getElementById('pendLogo').innerHTML=escudoMini(60); document.getElementById('pendWsp').onclick=()=>window.open(wspGroup(),'_blank'); showScreen('pending'); return; }
   showScreen('app'); go('escalera');
 }
 function showScreen(s){
@@ -445,7 +445,7 @@ async function submitSlots(chId){ const c=S.challenges.find(x=>x.id===chId),cha=
   if(!slotOk(s1)||!slotOk(s2)){e.textContent='Algún horario está fuera de las ventanas.';return;} if(!isWeekend(s1)&&!isWeekend(s2)){e.textContent='Al menos una opción debe ser de fin de semana.';return;}
   const now=Date.now(),max=now+10*86400000; for(const s of[s1,s2]){const t=new Date(s).getTime(); if(t<now){e.textContent='No se puede una fecha pasada.';return;} if(t>max){e.textContent='Deben estar dentro de 10 días.';return;}}
   for(const s of[s1,s2]){ if(un.includes(blockOfSlot(s))){e.textContent=`Una opción cae cuando ${fn(cha)} no puede (${blockLabel(blockOfSlot(s))}).`;return;} }
-  const {error}=await sb.from('challenges').update({slots:[{dt:s1,place:p1},{dt:s2,place:p2}],status:'esperando_eleccion'}).eq('id',chId); if(error){e.textContent=error.message;return;}
+  const {error}=await sb.from('challenges').update({slots:[{dt:argISO(s1),place:p1},{dt:argISO(s2),place:p2}],status:'esperando_eleccion'}).eq('id',chId); if(error){e.textContent=error.message;return;}
   closeModal(); const msg=`¡Desafío aceptado! 🎾 Te propongo 2 opciones: 1) ${fmtDT(s1)} (${p1}) · 2) ${fmtDT(s2)} (${p2}). Entrá para elegir una: ${APP_URL}`; modal(`<h3>¡Aceptado! 🎾</h3><p>Avisale a ${fn(cha)} las 2 fechas para que elija.</p><div class="opt"><button class="act lose" onclick="closeModal();render()">Después</button><button class="act wa" onclick="window.open('${waLink(cha,msg)}','_blank');closeModal();render()">📲 Avisar por WhatsApp</button></div>`); await refresh(); }
 async function pickSlot(chId,idx){ const c=S.challenges.find(x=>x.id===chId),s=c.slots[idx],other=P(c.toId); const {error}=await sb.from('challenges').update({play_date:s.dt,play_place:s.place,status:'aceptado'}).eq('id',chId); if(error){toast(error.message);return;} await refresh(); closeModal(); const msg=`¡Confirmado! 🎾 Jugamos el ${fmtDT(s.dt)} en ${s.place}. ¡Nos vemos! (Escalera Pilar ${APP_URL})`; modal(`<h3>¡Partido confirmado! 🗓️</h3><p>Jugás el <b>${fmtDT(s.dt)}</b> en ${s.place}. Avisale a ${fn(other)} y agendalo.</p><div class="opt"><button class="act wa" onclick="window.open('${waLink(other,msg)}','_blank')">📲 Avisar por WhatsApp</button><button class="act acc" onclick="addToCalendar(${chId})">📅 Agendar</button><button class="act lose" onclick="closeModal();render()">Listo</button></div>`); }
 function scoreModal(chId){ const c=S.challenges.find(x=>x.id===chId),cha=P(c.fromId),def=P(c.toId); const inp='type="number" inputmode="numeric" min="0" max="20" style="margin:0;text-align:center;padding:8px"'; modal(`<h3>Cargar resultado</h3><p>Completá los games de cada set (el 3er set es super tie-break a 10). Después tocá quién ganó.</p>
